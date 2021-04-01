@@ -1,0 +1,34 @@
+﻿@model LoginViewModel
+
+@{
+    ViewBag.Title = "Login";
+}
+
+<img class="img-fluid" src="~/images/bannertopleft.png" alt="School Logo" style="width:140px; height:140px;" />
+
+
+<div class="card" style="width:25rem;">
+    <div class="card-body">
+        Login
+    </div>
+</div>
+<div class="card mt-4" style="width:25rem;">
+    <div class="card-body">
+        <form asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Model.ReturnURL" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="@Model.UserName"></label>
+                <input asp-for="@Model.UserName" class="form-control" />
+                <span asp-validation-for="@Model.UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Password"></label>
+                <input asp-for="@Model.Password" class="form-control" />
+                <span asp-validation-for="@Model.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group text-right">
+                <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+        </form>
+    </div>
+</div>

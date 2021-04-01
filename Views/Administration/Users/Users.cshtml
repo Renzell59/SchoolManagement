@@ -1,0 +1,95 @@
+﻿@model IEnumerable<IdentityUser>
+
+@{
+    ViewBag.Title = "Users";
+}
+
+<h1 class="mt-3">Users</h1>
+<a asp-controller="Account" asp-action="Register">
+    <img src="~/images/AddUser.png" alt="Alternate Text" style="height:50px;width:50px;" />
+</a>
+<table class="table table-hover table-striped mt-3" style="width:70rem;">
+    <thead>
+        <tr>
+            <td>
+                <h4>User ID</h4>
+            </td>
+            <td>
+                <h4>Username</h4>
+            </td>
+            <td class="text-center">
+                <h4>View User Details</h4>
+            </td>
+            <td class="text-center">
+                <h4>Edit User</h4>
+            </td>
+            <td class="text-center">
+                <h4>Delete User</h4>
+            </td>
+        </tr>
+    </thead>
+    <tr>
+        @if (Model.Any())
+        {
+            foreach (var user in Model)
+            {
+    <tr>
+        <td>
+            <h6>@user.Id</h6>
+        </td>
+        <td>
+            <h6>@user.UserName</h6>
+        </td>
+        <td class="text-center">
+            <a asp-controller="Administration" asp-action="EditUser" asp-route-userId="@user.Id">
+                <img src="~/images/view-512.png" style="width:30px; height:30px" />
+            </a>
+        </td>
+
+        <td class="text-center">
+            <a asp-controller="Administration" asp-action="EditUser" asp-route-userId="@user.Id">
+                <img src="~/images/edit.png" style="width:30px; height:30px" />
+            </a>
+        </td>
+        <td class="text-center">
+            <form asp-controller="Administration" asp-action="DeleteUser" asp-route-userId="@user.Id" method="post">
+
+                <span id="deleteSpan_@user.Id">
+                    <button type="button" style="padding:0px;border:none;background:none" onclick="deleteAction('@user.Id',true)">
+                        <img src="~/images/Delete.png" style="width:30px; height:30px" />
+                    </button>
+                </span>
+
+                <span style="display:none" id="confirmDeleteSpan_@user.Id">
+                    Are you sure?
+                    <button type="submit" style="padding:0px;background:none;border:none;">
+                        <img src="~/images/yesicon.png" alt="Alternate Text" style="width:30px; height:30px" />
+                    </button>
+                    <button type="button" style="padding:0px;background:none;border:none;" onclick="deleteAction('@user.Id',false)">
+                        <img src="~/images/noicon.png" alt="Alternate Text" style="width:30px; height:30px" />
+                    </button>
+                </span>
+            </form>
+        </td>
+    </tr>
+        }
+    }
+    </table>
+
+    @section Scripts{
+        <script>
+
+            var deleteAction = (userId, confirmDelete) => {
+                let deleteSpan = document.querySelector(`#deleteSpan_${userId}`);
+            let confirmDeleteSpan = document.querySelector(`#confirmDeleteSpan_${userId}`)
+
+            if (confirmDelete) {
+                deleteSpan.style.display = "none";
+                confirmDeleteSpan.style.display = "inline";
+            } else {
+                deleteSpan.style.display = "inline";
+                confirmDeleteSpan.style.display = "none";
+            }
+        }
+        </script>
+    }

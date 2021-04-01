@@ -1,0 +1,103 @@
+﻿@model List<Student>
+
+@{
+    ViewBag.Title = "Landing Page";
+}
+
+
+
+<h1 class="text-md-center border-bottom">Practice List</h1>
+<div class="row justify-content-sm-center">
+    <div class="col-sm-6">
+        <table class="table table-sm table-responsive-sm table-striped text-center">
+            <thead class="table-secondary">
+                <tr class="font-weight-bold">
+                    <td>ID</td>
+                    <td>Name</td>
+                    <td>Email</td>
+                    <td>Age</td>
+                    <td>Entry Year</td>
+                    <td>Grade</td>
+                    <td>Phone Number</td>
+                    <td>Sex</td>
+                    <td>View</td>
+                    <td>Update</td>
+                    <td>Delete</td>
+                </tr>
+            </thead>
+            <tbody>
+                @try
+                {
+                    if (Model.Any())
+                    {
+                        for (int i = 0; i < Model.Count(); i++)
+                        {
+                            <tr>
+                                <td>@Model[i].id</td>
+                                <td>@Model[i].firstName @Model[i].middleName @Model[i].lastName</td>
+                                <td>@Model[i].email</td>
+                                <td>@Model[i].age</td>
+                                <td>@Model[i].entryYear</td>
+                                <td>@Model[i].grade</td>
+                                <td>@Model[i].phoneNumber</td>
+                                <td>@Model[i].gender</td>
+                                <td>
+                                    <a asp-controller="Home" asp-action="Details" asp-route-id="@Model[i].id">
+                                        <img asp-append-version="true" src="~/images/view-512.png" alt="Alternate Text" style="width:20px; height:20px" />
+                                    </a>
+                                </td>
+                                <td>
+                                    <a asp-controller="Home" asp-action="Update" asp-route-id="@Model[i].id">
+                                        <img asp-append-version="true" src="~/images/edit.png" alt="Alternate Text" style="width:20px; height:20px" />
+                                    </a>
+                                </td>
+                                <td>
+                                    <form asp-controller="Home" asp-action="Delete" asp-route-id="@Model[i].id" method="post">
+                                        <span id="deleteId_@Model[i].id">
+                                            <button style="border:none;padding:0;background:none" onclick="confirmDelete('@Model[i].id',true)">
+                                                <img asp-append-version="true" src="~/images/Delete.png" alt="Alternate Text" style="width:20px; height:20px" />
+                                            </button>
+                                        </span>
+                                        <span style="display:none" id="confirmDelete_@Model[i].id">
+                                            <span>Are you sure?</span>
+                                            <button type="submit" style="border:none;padding:0;background:none">
+                                                <img asp-append-version="true" src="~/images/yesicon.png" alt="Alternate Text" style="width:20px; height:20px" />
+                                            </button>
+                                            <button style="border:none;padding:0;background:none" onclick="confirmDelete('@Model[i].id',false)">
+                                                <img asp-append-version="true" src="~/images/noicon.png" alt="Alternate Text" style="width:20px; height:20px" />
+                                            </button>
+                                        </span>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                }
+                catch (ArgumentNullException ex)
+                {
+                    <tr>
+                        <td>Use has been deleted</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        var confirmDelete = function (buttonId, isConfirmDelete) {
+            let deleteId = `deleteId_${buttonId}`;
+            let confirmDelete = `confirmDelete_${buttonId}`
+
+            if (isConfirmDelete) {
+                $(`#${deleteId}`).hide();
+                $(`#${confirmDelete}`).show();
+            }
+            else {
+                $(`#${confirmDelete}`).hide();
+                $(`#${deleteId}`).show();
+            }
+        };
+    </script>
+ }

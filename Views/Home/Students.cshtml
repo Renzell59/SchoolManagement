@@ -1,0 +1,112 @@
+﻿@model IEnumerable<Student>
+
+@{
+    ViewBag.Title = "Landing Page";
+}
+
+<h1 class="text-md-center border-bottom">Students List</h1>
+<div class="row justify-content-sm-center">
+    <div class="col-sm-10">
+        <table class="table table-sm table-responsive-sm table-striped text-center">
+            <thead class="table-secondary">
+                <tr class="font-weight-bold">
+                    <td>ID</td>
+                    <td>Name</td>
+                    <td>Email</td>
+                    <td>Date of Birth</td>
+                    <td>Age</td>
+                    <td>Entry Year</td>
+                    <td>Grade</td>
+                    <td>Phone Number</td>
+                    <td>Semester</td>
+                    <td>Address</td>
+                    <td>City</td>
+                    <td>State</td>
+                    <td>Sex</td>
+                    <td>View</td>
+                    <td>Update</td>
+                    <td>Delete</td>
+                </tr>
+            </thead>
+            <tbody>
+                @try
+                {
+                    if (Model.Any())
+                    {
+                        foreach (Student student in Model)
+                        {
+                            <tr id="rowId_@student.id">
+                                <td>@student.id</td>
+                                <td>@student.firstName @student.middleName @student.lastName</td>
+                                <td>@student.email</td>
+                                <td>@student.birthDate.ToShortDateString()</td>
+                                <td>@student.age</td>
+                                <td>@student.entryYear</td>
+                                <td>@student.grade</td>
+                                <td>@student.phoneNumber</td>
+                                <td>@student.season</td>
+                                <td>@student.address</td>
+                                <td>@student.city</td>
+                                <td>@student.state</td>
+                                <td>@student.gender</td>
+                                <td>
+                                    <a asp-controller="Home" asp-action="Details" asp-route-id="@student.id">
+                                        <img asp-append-version="true" src="~/images/view-512.png" alt="Alternate Text" style="width:20px; height:20px" />
+                                    </a>
+                                </td>
+                                <td>
+                                    <a asp-controller="Home" asp-action="Update" asp-route-id="@student.id">
+                                        <img asp-append-version="true" src="~/images/edit.png" alt="Alternate Text" style="width:20px; height:20px" />
+                                    </a>
+                                </td>
+                                <td>
+                                    <form asp-controller="Home" asp-action="Delete" asp-route-id="@student.id" method="post">
+                                        <span id="deleteId_@student.id">
+                                            <button type="button" style="border:none;padding:0;background:none" onclick="confirmDelete('@student.id',true)">
+                                                <img asp-append-version="true" src="~/images/Delete.png" alt="Alternate Text" style="width:20px; height:20px" />
+                                            </button>
+                                        </span>
+                                        <span style="display:none" id="confirmDelete_@student.id">
+                                            <span>Are you sure?</span>
+                                            <button type="submit" style="border:none;padding:0;background:none">
+                                                <img asp-append-version="true" src="~/images/yesicon.png" alt="Alternate Text" style="width:20px; height:20px" />
+                                            </button>
+                                            <button type="button" style="border:none;padding:0;background:none" onclick="confirmDelete('@student.id',false)">
+                                                <img asp-append-version="true" src="~/images/noicon.png" alt="Alternate Text" style="width:20px; height:20px" />
+                                            </button>
+                                        </span>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                }
+                catch (ArgumentNullException ex)
+                {
+                    <tr>
+                        <td>User has been deleted</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts{
+
+    <script>
+        var confirmDelete = function (buttonId, isConfirmDelete) {
+            let deleteId = `deleteId_${buttonId}`;
+            let confirmDelete = `confirmDelete_${buttonId}`
+
+            if (isConfirmDelete) {
+                $(`#${deleteId}`).hide();
+                $(`#${confirmDelete}`).show();
+            }
+            else {
+                $(`#${confirmDelete}`).hide();
+                $(`#${deleteId}`).show();
+            }
+        };
+    </script>
+}

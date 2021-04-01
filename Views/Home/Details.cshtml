@@ -1,0 +1,48 @@
+﻿@model HomeDetailsViewModel
+@{
+    ViewBag.Title = "Student Details";
+    var existingPhoto = "~/images/Students/" + (Model.Student.photoPath ?? "blank-profile-picture-973460_1280.png");
+}
+
+
+<h2 class="text-center mt-4 border-bottom">Student Detail</h2>
+
+<div class="row mt-4 justify-content-sm-center">
+    <div class="card col-sm-5 text-center">
+        <div class="card-header">
+            <h4 class="card-title">@Model.Student.firstName @Model.Student.middleName @Model.Student.lastName</h4>
+        </div>
+        <div class="card-body">
+            <p>Email: @Model.Student.email</p>
+            <p>Age: @Model.Student.age</p>
+            <p>Sex: @Model.Student.gender</p>
+            <p>Date of Birth: @Model.Student.birthDate.ToShortDateString()</p>
+            <p>Grade: @Model.Student.grade</p>
+            <p>Phone: @Model.Student.phoneNumber</p>
+            <p>Semester: @Model.Student.season</p>
+            <p>Address: @Model.Student.address</p>
+            <p>City: @Model.Student.city</p>
+            <p>State: @Model.Student.state</p>
+        </div>
+        <div class="card-footer text-center">
+            <form asp-controller="Home" asp-action="Delete" asp-route-id="@Model.Student.id" method="post">
+                <a asp-controller="Home" asp-action="Update" asp-route-id="@Model.Student.id">
+                    <img asp-append-version="true" src="~/images/edit.png" alt="Alternate Text" class="" style="width:35px;height:35px" />
+                </a>
+                <button type="submit" style="border:none;padding:0;background:none">
+                    <img asp-append-version="true" src="~/images/Delete.png" alt="Alternate Text" class="img-thumbnail" style="width:35px;height:35px; border:none;padding:0;background:none" />
+                </button>
+                <a asp-controller="Home" asp-action="Index">
+                    <img asp-append-version="true" src="~/images/back.png" alt="Alternate Text" class="" style="width:35px;height:35px" />
+                </a>
+            </form>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <img asp-append-version="true" src="@existingPhoto" alt="Student Photo" class="img-fluid"style="height:567px;width:600px;" />
+    </div>
+</div>
+
+@section Scripts{ 
+    <script src="~/js/CustomScript.js"></script>
+}
