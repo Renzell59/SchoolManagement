@@ -10,6 +10,8 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
+using SchoolManagement.Security;
 
 namespace SchoolManagement.Controllers
 {
@@ -17,13 +19,21 @@ namespace SchoolManagement.Controllers
     {
         private readonly IStudentRepository _studentRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IDataProtector _dataProtector;
+        private readonly DataProtectionPurposeStrings _dataProtectionPurposeStrings;
 
         public HomeController(IStudentRepository studentRepository,
-            IWebHostEnvironment webHostEnvironment
+            IWebHostEnvironment webHostEnvironment,
+            IDataProtectionProvider dataProtectionProvider,
+            DataProtectionPurposeStrings dataProtectionPurposeStrings
             )
         {
             this._studentRepository = studentRepository;
             this._webHostEnvironment = webHostEnvironment;
+            this._dataProtectionPurposeStrings = dataProtectionPurposeStrings;
+
+            _dataProtector = dataProtectionProvider.CreateProtector(dataProtectionPurposeStrings.EmployeeIdRouteValue);
+
         }
         
         [HttpGet]
@@ -72,19 +82,29 @@ namespace SchoolManagement.Controllers
 
         public IActionResult Students()
         {
-            
-            return View(_studentRepository.GetAllStudents());
+            IEnumerable<Student> students = _studentRepository.GetAllStudents().
+                Select(s =>
+                {
+                    s.EncryptedId = _dataProtector.Protect(s.id.ToString());
+                    return s;
+                });
+
+            return View(students);
         }
 
 
         [HttpGet]
-        public IActionResult Details(int ID)
+        public IActionResult Details(string id)
         {
-            Student student = _studentRepository.GetStudentByID(ID);
+            string unProtectedStudentId = _dataProtector.Unprotect(id);
+            int studentId = Convert.ToInt32(unProtectedStudentId);
+
+            Student student = _studentRepository.GetStudentByID(studentId);
             if (student != null)
             {
                 HomeDetailsViewModel model = new HomeDetailsViewModel();
                 model.Student = student;
+                model.StudentIdRouteValue = id;
                 return View(model);
             }
             return View("Index");
@@ -92,21 +112,23 @@ namespace SchoolManagement.Controllers
 
         [HttpGet]
         [HttpPost]
-        public IActionResult Delete(int ID)
+        public IActionResult Delete(string Id)
         {
-            Student student = _studentRepository.GetStudentByID(ID);
+            int studentId = Convert.ToInt32(_dataProtector.Unprotect(Id));
+            Student student = _studentRepository.GetStudentByID(studentId);
             if(student != null)
             {
-                _studentRepository.DeleteStudentByID(ID);
+                _studentRepository.DeleteStudentByID(studentId);
                 return RedirectToAction("Students","Home");
             }
             return View("Index");
         }
 
         [HttpGet]
-        public IActionResult Update(int ID)
+        public IActionResult Update(string ID)
         {
-            Student student = _studentRepository.GetStudentByID(ID);
+            int studentId = Convert.ToInt32(_dataProtector.Unprotect(ID));
+            Student student = _studentRepository.GetStudentByID(studentId);
             EditStudentViewModel model = new EditStudentViewModel()
             {
                 ID = student.id,
@@ -224,31 +246,12 @@ namespace SchoolManagement.Controllers
 
         }
 
-        //public int CaluclateAge<T>(T model)
-        //{
-        //    DateTime dateNow = DateTime.Now;
-
-        //    int currentYear = dateNow.Year;
-
-        //    int calculatedYearToDays = 0;
-        //    int myDaysInAYear = 0;
-        //    int AgeInDays = 0;
-        //    int AgeInYears = 0;
-        //    if (DateTime.IsLeapYear(currentYear))
-        //    {
-        //        calculatedYearToDays = (currentYear - model.BirthDate.Year) * 366;
-        //        myDaysInAYear = ((model.BirthDate.Month * 366) / 12) + model.BirthDate.Day;
-        //        AgeInDays = calculatedYearToDays - myDaysInAYear;
-        //        AgeInYears = AgeInDays / 366;
-
-        //    }
-        //    calculatedYearToDays = (currentYear - model.BirthDate.Year) * 365;
-        //    myDaysInAYear = ((model.BirthDate.Month * 365) / 12) + model.BirthDate.Day;
-        //    AgeInDays = calculatedYearToDays - myDaysInAYear;
-        //    AgeInYears = AgeInDays / 365;
-
-        //    return AgeInYears;
-        //}
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult About()
+        {
+            return View();
+        }
     }
 }
 

@@ -1,0 +1,30 @@
+﻿@model EditClaimsInUserViewModel
+
+@{ 
+    ViewBag.Title = "Edit Claims";
+}
+
+<div class="container mt-3 p-5 bg-light">
+    <div class="border-bottom">
+        <h1>Edit Claims for User</h1>
+    </div>
+    <div>
+        <form asp-controller="Administration" asp-action="EditClaimsInUser" method="post">
+            <input hidden asp-for="@Model.UserID" />
+            @for (int i = 0; i < Model.UserClaims.Count; i++)
+            {
+                <input hidden asp-for="@Model.UserClaims[i].ClaimType" />
+                <div class="custom-control custom-checkbox m-2">
+                    <input asp-for="@Model.UserClaims[i].IsSelected" class="custom-control-input" />
+                    <label asp-for="@Model.UserClaims[i].IsSelected" class="custom-control-label">@Model.UserClaims[i].ClaimType</label>
+                </div>
+            }
+            <button type="submit" style="padding:0px;border:none;background:none">
+                <img asp-append-version="true" src="~/images/submit.png" alt="Alternate Text" style="width:35px;height:35px" />
+            </button>
+            <a asp-controller="Administration" asp-action="EditUser" asp-route-userId="@Model.UserID">
+                <img asp-append-version="true" src="~/images/back.png" alt="Alternate Text" style="width:35px;height:35px;" />
+            </a>
+        </form>
+    </div>
+</div>

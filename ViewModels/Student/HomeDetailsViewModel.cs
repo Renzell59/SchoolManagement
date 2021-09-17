@@ -9,5 +9,7 @@ namespace SchoolManagement.ViewModels
     public class HomeDetailsViewModel
     {
         public Student Student { get; set; }
+        public string StudentIdRouteValue { get; set; }
+        public int MyProperty { get; set; }
     }
 }

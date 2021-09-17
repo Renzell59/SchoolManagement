@@ -1,4 +1,11 @@
 ﻿.nav-link{
-    font-size:25px;
+    font-size:20px;
 }
 
+body{
+    background-image: url("/images/Website background image.jpg");
+}
+
+.navbartop{
+    background-color: #e62e00;
+}

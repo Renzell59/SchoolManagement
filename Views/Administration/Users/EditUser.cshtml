@@ -1,5 +1,96 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model EditUserViewModel
 @{
+    ViewBag.Title = "Edit User";
 }
+
+<div class="container mt-3 p-5 bg-light">
+    <div class="row border-bottom">
+        <h1>Edit User</h1>
+    </div>
+    <div class="row mt-3">
+        <form asp-controller="Administration" asp-action="EditUser" asp-route-userId="@Model.UserID" method="post">
+            <div class="form-group col-sm">
+                <label asp-for="@Model.UserName" class="font-weight-bold"></label>
+                <input asp-for="@Model.UserName" class="form-control"/>
+            </div>
+            <div class="form-group col-sm">
+                <label asp-for="@Model.Email" class="font-weight-bold"></label>
+                <input asp-for="@Model.Email" class="form-control"/>
+            </div>
+            <div class="form-group col-sm">
+                <p>Id: @Model.UserID</p>
+            </div>
+            <div class="form-group col-sm ml-0">
+                <button type="submit" style="border:none;padding:0;background:none;">
+                    <img asp-append-version="true" src="~/images/submit.png" style="width:35px;height:35px" />
+                </button>
+                <a asp-controller="Administration" asp-action="Users" class="ml-2">
+                    <img asp-append-version="true" src="~/images/back.png" alt="Alternate Text" style="width:35px;height:35px" />
+                </a>
+            </div>
+        </form>
+    </div>
+    <div class="row">
+        <div class="col-sm-6 table-responsive">
+            <table class="table table-hover mt-3 table-striped">
+                <thead>
+                    <tr>
+                        <td><h3>Roles of this user</h3></td>
+                    </tr>
+                </thead>
+                @if (Model.Roles.Any())
+                {
+                    foreach (var role in Model.Roles)
+                    {
+                        <tr>
+                            <td><h6>@role</h6></td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td>
+                            <h6>User is not part of any roles at the moment.</h6>
+                        </td>
+                    </tr>
+                }
+            </table>
+            <a asp-controller="Administration" asp-action="EditRolesInUser" asp-route-userId="@Model.UserID">
+                <img asp-append-version="true" src="~/images/AddRole.png" alt="Alternate Text" style="width:35px;height:35px" />
+            </a>
+        </div>
+
+        <div class="table-responsive col-sm-6">
+            <table class="table table-hover mt-3 table-striped">
+                <thead>
+                    <tr>
+                        <td>
+                            <h3>Claims of this user</h3>
+                        </td>
+                    </tr>
+                </thead>
+                @if (Model.Claims.Any())
+                {
+                    foreach (var claim in Model.Claims)
+                    {
+                        <tr>
+                            <td><h6>@claim</h6></td>
+                        </tr>
+                    }
+
+                }
+                else
+                {
+                    <tr>
+                        <td><h6>User is currently not a part of any claims</h6></td>
+                    </tr>
+                }
+
+            </table>
+            <a asp-controller="Administration" asp-action="EditClaimsInUser" asp-route-userId="@Model.UserID">
+                <img asp-append-version="true" src="~/images/AddClaim.png" alt="Alternate Text" style="width:35px;height:35px;" />
+            </a>
+        </div>
+    </div>
+</div>

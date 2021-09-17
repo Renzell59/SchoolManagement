@@ -9,7 +9,6 @@ namespace SchoolManagement.Models
     {
         IEnumerable<Student> GetAllStudents();
         Student GetStudentByID(int Id);
-
         Student DeleteStudentByID(int Id);
         Student UpdateStudent(Student studentChange);
         Student AddStudent(Student student);

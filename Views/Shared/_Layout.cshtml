@@ -1,11 +1,16 @@
 ﻿@inject UserManager<IdentityUser> _userManager
 @inject SignInManager<IdentityUser> _signInManager
+
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService authorizationService 
 <!DOCTYPE html>
 
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
     <script src="~/lib/jquery/jquery.js"></script>
+    <script src="~/lib/font-awesome/js/fontawesome.js"></script>
+    <script src="~/lib/font-awesome/js/all.js"></script>
     <script src="~/lib/bootstrap/js/bootstrap.js"></script>
     <link href="~/lib/bootstrap/css/bootstrap.css" rel="stylesheet" />
     <script src="~/lib/jquery-validate/jquery.validate.js"></script>
@@ -14,90 +19,88 @@
     <title>@ViewBag.Title</title>
 </head>
 <body>
-    <nav class="navbar navbar-expand-sm bg-dark" style="height:35px;"></nav>
-    <nav class="navbar sticky-top navbar-light bg-light navbar-expand-sm border-bottom align-content-center">
-        <a asp-controller="Home" asp-action="Index">
-            <img asp-append-version="true" style="width:70px; height:70px;" class="mr-auto ml-auto" src="~/images/bannertopleft.png" alt="Alternate Text" />
-        </a>
-            <ul class="navbar-nav mt-xs-3 mb-xs-3  justify-content-center">
-                <li class="nav-item">
-                    <a asp-controller="Home" asp-action="Index" class="nav-link mr-5">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a asp-controller="Home" asp-action="Create" class="nav-link mr-5">Create</a>
-                </li>
-                <li class="nav-item">
-                    <a asp-controller="Home" asp-action="Students" class="nav-link mr-5">Students</a>
-                </li>
-                <li class="nav-item">
-                    <a asp-controller="Administration" asp-action="Roles" class="nav-link mr-5" >Roles</a>
-                </li>
-                <li class="nav-item">
-                    <a asp-controller="Administration" asp-action="Users" class="nav-link mr-5">Users</a>
-                </li>
-            </ul>
-            <ul class="navbar-nav ml-auto mt-xs-3 mb-xs-3 align-self-end">
-                @if (_signInManager.IsSignedIn(User))
+    <header>
+        <nav class="navbar navbar-expand-sm navbartop" style="height:35px;"></nav>
+        <nav class="navbar sticky-top navbar-light bg-white navbar-expand-lg border-bottom  justify-content-center navbarmain">
+                    <a asp-controller="Home" asp-action="Index" class="navbar-brand mr-5">
+                        <img asp-append-version="true" style="width:70px; height:70px;" src="~/images/bannertopleft.png" alt="Alternate Text" />
+                    </a>
+                    <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navBarToggler" aria-controls="navBarToggler"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navBarToggler">
+                        <ul class="navbar-nav mt-3 mb-3 mr-5">
+                            <li class="nav-item mr-5">
+                                <a asp-controller="Home" asp-action="Index" class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item mr-5">
+                                <a asp-controller="Home" asp-action="About" class="nav-link">About</a>
+                            </li>
+                            <li class="nav-item mr-5">
+                                <a asp-controller="Home" asp-action="Create" class="nav-link">Create</a>
+                            </li>
+                            <li class="nav-item mr-5">
+                                <a asp-controller="Home" asp-action="Students" class="nav-link">Students</a>
+                            </li>
+                            @if (_signInManager.IsSignedIn(User) && (await authorizationService.AuthorizeAsync(User, "EditRolePolicy")).Succeeded)
+                            {
+                                <li class="nav-item dropdown mr-5">
+                                    <a class="nav-link" href="#navbarAdminCollapseMenuLink" role="button" data-toggle="collapse"
+                                       aria-expanded="false" data-target="#navbarAdminCollapseMenuLink">Administrator</a>
+                                    <div class="collapse" id="navbarAdminCollapseMenuLink">
+                                        <a asp-controller="Administration" asp-action="Roles" class="nav-link">Roles</a>
+                                        <a asp-controller="Administration" asp-action="Users" class="nav-link">Users</a>
+                                    </div>
+                                </li>
+
+                            }
+                            @if (_signInManager.IsSignedIn(User))
+                            {
+                                <li class="nav-item mr-5">
+                                    <a class="nav-link" role="button" data-toggle="collapse"
+                                       aria-expanded="false" href="#navbarPassowrdCollapseMenuLink" data-target="#navbarPasswordCollapseMenuLink">Password</a>
+                                    <div class="collapse" id="navbarPasswordCollapseMenuLink">
+                                        <a asp-controller="Account" asp-action="ChangePassword" class="nav-link">Change Password</a>
+                                        <a asp-controller="Account" asp-action="ResetPassword" class="nav-link">Reset Password</a>
+                                        @if( !(await _userManager.HasPasswordAsync(await _userManager.FindByNameAsync(User.Identity.Name))))
                 {
-                    <li class="nav-item">
-                        <form asp-controller="Account" asp-action="Logout" method="post">
-                            <button type="submit" class="nav-link btn btn-link">
-                                @User.Identity.Name logout
-                            </button>
-                        </form>
-                    </li>
+                                    <a asp-controller="Account" asp-action="CreatePassword" class="nav-link">Create Password</a>
                 }
-                else
-                {
-                    <li class="nav-item">
-                        <a asp-controller="Account" asp-action="Register" class="nav-link">Register</a>
-                    </li>
-                    <li class="nav-item">
-                        <a asp-controller="Account" asp-action="Login" class="nav-link">Login</a>
-                    </li>
-                }
-            </ul>
-    </nav>
-    <div class="row">
-        <nav class="navbar-light col-sm-1 bg-light border-right text-center">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a href="#" class="nav-link">content</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">content</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">content</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">content</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">content</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">content</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">content</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">content</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">content</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">content</a>
-                </li>
-            </ul>
+                                    </div>
+                                </li>
+
+                            }
+                        </ul>
+                        <ul class="navbar-nav mt-3 mb-3 ml-auto">
+                            @if (_signInManager.IsSignedIn(User))
+                            {
+
+
+                                <li class="nav-item">
+                                    <form asp-controller="Account" asp-action="Logout" method="post">
+                                        <button type="submit" class="nav-link btn btn-link">
+                                            @User.Identity.Name logout
+                                        </button>
+                                    </form>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a asp-controller="Account" asp-action="Register" class="nav-link">Register</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-controller="Account" asp-action="Login" class="nav-link">Login</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
         </nav>
-        <div class="col-sm-11">
+    </header>
+        <div class="container-fluid">
             @RenderBody()
         </div>
-
-    </div>
             @if (IsSectionDefined("Scripts"))
             {
                 @RenderSection("Scripts", required: true)

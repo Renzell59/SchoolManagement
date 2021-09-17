@@ -8,7 +8,7 @@ using SchoolManagement.Models;
 using SchoolManagement.Utilities;
 
 namespace SchoolManagement.ViewModels.Account
-{
+{ 
     public class RegisterViewModel
     {
         [Required]

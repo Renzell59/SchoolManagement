@@ -16,12 +16,15 @@ namespace SchoolManagement.Models
         }
 
         public DbSet<Student> Students { get; set; }
+        public DbSet<Teacher> Teachers { get; set; }
+        public DbSet<StudentComment> StudentComments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.OnDeleteBehaviorToRestrict();
+            
         }
     }
 }

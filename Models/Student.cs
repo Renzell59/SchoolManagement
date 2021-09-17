@@ -13,6 +13,9 @@ namespace SchoolManagement.Models
         [JsonInclude]
         public int id { get; set; }
 
+        [NotMapped]
+        public string EncryptedId { get; set; }
+
         [JsonInclude]
         public string firstName { get; set; }
 
@@ -53,5 +56,6 @@ namespace SchoolManagement.Models
 
         [JsonInclude]
         public string state { get; set; }
+        public string ZipCode { get; set; }
     }
 }

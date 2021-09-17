@@ -1,0 +1,30 @@
+﻿@model List<EditRolesInUserViewModel>
+@{ 
+    ViewBag.Title = "Edit Roles in User";
+    string userId = ViewBag.userId;
+}
+
+<div class="container mt-3 p-5 bg-light">
+    <div class="border-bottom">
+        <h1>Edit Roles for User</h1>
+    </div>
+    <div>
+        <form asp-controller="Administration" asp-action="EditRolesInUser" asp-route-userId="@userId" method="post">
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <input hidden asp-for="@Model[i].RoleID" />
+                <input hidden asp-for="@Model[i].RoleName" />
+                <div class="custom-control custom-checkbox m-2">
+                    <input asp-for="@Model[i].IsSelected" class="custom-control-input" />
+                    <label asp-for="@Model[i].IsSelected" class="custom-control-label">@Model[i].RoleName</label>
+                </div>
+            }
+            <button class="mt-3" type="submit" style="padding:0px;background:none;border:none;">
+                <img asp-append-version="true" src="~/images/submit.png" alt="Alternate Text" style="width:35px;height:35px" />
+            </button>
+            <a asp-controller="Administration" asp-action="EditUser" asp-route-userId="@userId">
+                <img asp-append-version="true" src="~/images/back.png" alt="Alternate Text" style="width:35px;height:35px" />
+            </a>
+        </form>
+    </div>
+</div>
